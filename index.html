@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="학교를 탈출하기 위해 친구들을 구하고 각 층의 위협을 돌파하는 2D 액션 게임입니다.">
+  <meta name="theme-color" content="#101a2d">
+  <title>Escape from School</title>
+  <style>
+    :root { --ink:#f6f7fb; --muted:#b8c0d1; --navy:#101a2d; --blue:#6da8ff; --cyan:#72e4d4; --line:rgba(255,255,255,.13); }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; color:var(--ink); background:#0b1220; font-family:"Pretendard","Noto Sans KR",system-ui,sans-serif; line-height:1.6; }
+    a { color:inherit; text-decoration:none; }
+    .wrap { width:min(1120px, calc(100% - 40px)); margin:auto; }
+    .top { position:sticky; top:0; z-index:10; backdrop-filter:blur(14px); background:rgba(11,18,32,.78); border-bottom:1px solid var(--line); }
+    .nav { height:68px; display:flex; align-items:center; justify-content:space-between; gap:24px; }
+    .brand { font-weight:800; letter-spacing:.02em; }
+    .brand span { color:var(--cyan); }
+    .links { display:flex; gap:20px; color:var(--muted); font-size:.92rem; }
+    .links a:hover { color:white; }
+    .hero { position:relative; overflow:hidden; min-height:620px; display:grid; align-items:center; border-bottom:1px solid var(--line); }
+    .hero::before { content:""; position:absolute; inset:0; background:linear-gradient(90deg, #0b1220 5%, rgba(11,18,32,.72) 48%, rgba(11,18,32,.22)), url("Assets/Resources/Maps/school_3f.png") center/cover; opacity:.92; }
+    .hero::after { content:""; position:absolute; inset:auto 0 0; height:35%; background:linear-gradient(transparent,#0b1220); }
+    .hero-content { position:relative; z-index:1; padding:86px 0 104px; max-width:650px; }
+    .eyebrow { color:var(--cyan); font-weight:700; letter-spacing:.14em; font-size:.78rem; }
+    h1 { margin:11px 0 18px; font-size:clamp(3rem, 8vw, 6.4rem); line-height:.97; letter-spacing:-.07em; }
+    .lead { max-width:540px; margin:0; color:#e2e7f2; font-size:clamp(1.02rem,2vw,1.2rem); }
+    .actions { display:flex; flex-wrap:wrap; gap:12px; margin-top:30px; }
+    .button { display:inline-flex; align-items:center; justify-content:center; min-height:48px; padding:0 20px; border-radius:9px; background:var(--blue); color:#07101e; font-weight:800; transition:transform .2s,background .2s; }
+    .button:hover { transform:translateY(-2px); background:#9bc2ff; }
+    .button.ghost { background:rgba(255,255,255,.08); color:white; border:1px solid var(--line); }
+    .button.ghost:hover { background:rgba(255,255,255,.15); }
+    section { padding:96px 0; }
+    .section-title { margin:0 0 9px; font-size:clamp(2rem,4vw,3rem); letter-spacing:-.045em; }
+    .section-intro { margin:0 0 35px; color:var(--muted); }
+    .features { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+    .card { padding:26px; border:1px solid var(--line); border-radius:14px; background:linear-gradient(145deg,rgba(255,255,255,.07),rgba(255,255,255,.025)); }
+    .num { color:var(--cyan); font-weight:800; font-size:.84rem; }
+    .card h3 { margin:13px 0 8px; font-size:1.2rem; }
+    .card p { margin:0; color:var(--muted); font-size:.95rem; }
+    .route { background:#111d32; }
+    .route-grid { display:grid; grid-template-columns:1.05fr .95fr; gap:28px; align-items:center; }
+    .map { width:100%; min-height:330px; object-fit:cover; object-position:center; border-radius:14px; border:1px solid var(--line); filter:saturate(.8) contrast(1.05); }
+    .stages { display:grid; gap:11px; }
+    .stage { display:grid; grid-template-columns:40px 1fr; gap:12px; align-items:start; padding:13px 0; border-bottom:1px solid var(--line); }
+    .stage:last-child { border:0; }
+    .stage b { display:block; }
+    .stage p { margin:2px 0 0; color:var(--muted); font-size:.92rem; }
+    .badge { width:30px; height:30px; display:grid; place-items:center; border-radius:50%; background:rgba(114,228,212,.13); color:var(--cyan); font-size:.78rem; font-weight:800; }
+    .play { display:grid; grid-template-columns:repeat(2,1fr); gap:16px; }
+    .control { padding:24px; border-radius:14px; background:#151f33; border:1px solid var(--line); }
+    .key { display:inline-block; min-width:40px; padding:3px 9px; margin:0 4px 4px 0; border:1px solid #72809a; border-radius:5px; background:#27354e; text-align:center; font-family:ui-monospace,monospace; font-size:.84rem; }
+    .control p { margin:10px 0 0; color:var(--muted); }
+    .download { text-align:center; border-top:1px solid var(--line); background:radial-gradient(circle at 50% 0, #213963, #0b1220 64%); }
+    .download .section-intro { max-width:600px; margin:0 auto 28px; }
+    .notice { margin:24px auto 0; color:var(--muted); font-size:.86rem; }
+    footer { padding:30px 0; border-top:1px solid var(--line); color:#8994a8; font-size:.86rem; }
+    @media (max-width:760px) { .links { display:none; } .hero { min-height:570px; } section { padding:68px 0; } .features,.play,.route-grid { grid-template-columns:1fr; } .route-grid { gap:24px; } .map { min-height:240px; } }
+  </style>
+</head>
+<body>
+  <header class="top">
+    <nav class="nav wrap" aria-label="주요 메뉴">
+      <a class="brand" href="#top">ESCAPE <span>FROM</span> SCHOOL</a>
+      <div class="links"><a href="#about">게임 소개</a><a href="#route">탈출 경로</a><a href="#play">조작법</a><a href="#download">다운로드</a></div>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="wrap hero-content">
+        <div class="eyebrow">2D ACTION · SCHOOL ESCAPE</div>
+        <h1 id="hero-title">학교에서<br>탈출하라.</h1>
+        <p class="lead">각 층을 돌파하고 친구들을 구해, 마지막 이동식 미로 너머의 출구까지 도달하세요.</p>
+        <div class="actions">
+          <a class="button" href="https://github.com/jw-astro09/share/releases">다운로드 준비 중</a>
+          <a class="button ghost" href="https://github.com/jw-astro09/share" target="_blank" rel="noreferrer">GitHub 저장소</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="about" class="wrap">
+      <div class="eyebrow">THE MISSION</div>
+      <h2 class="section-title">단순한 길찾기가 아닌 탈출</h2>
+      <p class="section-intro">교실과 복도를 누비며 위협을 피하고, 무기를 확보해 길을 열어야 합니다.</p>
+      <div class="features">
+        <article class="card"><div class="num">01</div><h3>구조</h3><p>각 구역에 남은 친구를 찾아 모든 구조 대상을 안전하게 탈출시키세요.</p></article>
+        <article class="card"><div class="num">02</div><h3>돌파</h3><p>구역마다 기다리는 보스를 상대하고, 얻은 무기로 다음 층으로 나아갑니다.</p></article>
+        <article class="card"><div class="num">03</div><h3>탈출</h3><p>마지막 이동식 미로를 통과해 출구에 도달하면 탈출이 완성됩니다.</p></article>
+      </div>
+    </section>
+
+    <section id="route" class="route">
+      <div class="wrap route-grid">
+        <img class="map" src="Assets/Resources/Maps/school_3f.png" alt="게임 속 학교 복도 지도">
+        <div>
+          <div class="eyebrow">ESCAPE ROUTE</div>
+          <h2 class="section-title">옥상에서 출구까지</h2>
+          <div class="stages">
+            <div class="stage"><span class="badge">01</span><div><b>옥상 · 5층</b><p>탈출의 이유를 확인하고 첫 무기를 확보합니다.</p></div></div>
+            <div class="stage"><span class="badge">02</span><div><b>4층 → 3층 → 도서관</b><p>교실과 복도를 지나 보스를 처치하고 구조를 이어 갑니다.</p></div></div>
+            <div class="stage"><span class="badge">03</span><div><b>2층 → 1층</b><p>가정실의 위협과 생태 텃밭의 변수에 맞섭니다.</p></div></div>
+            <div class="stage"><span class="badge">04</span><div><b>이동식 미로</b><p>모든 구조를 마친 뒤, 마지막 관문을 넘어 출구로 향합니다.</p></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="play" class="wrap">
+      <div class="eyebrow">HOW TO PLAY</div>
+      <h2 class="section-title">조작법</h2>
+      <div class="play">
+        <div class="control"><strong><span class="key">W</span><span class="key">A</span><span class="key">S</span><span class="key">D</span> 또는 방향키</strong><p>플레이어를 이동합니다.</p></div>
+        <div class="control"><strong><span class="key">E</span></strong><p>다음 구역으로 이동하거나 출구를 이용합니다.</p></div>
+        <div class="control"><strong><span class="key">SPACE</span></strong><p>확보한 무기로 가까운 적을 공격합니다.</p></div>
+        <div class="control"><strong>목표: 모두 구조하기</strong><p>한 명이라도 남기면 최종 탈출에 실패합니다.</p></div>
+      </div>
+    </section>
+
+    <section id="download" class="download">
+      <div class="wrap">
+        <div class="eyebrow">GET THE GAME</div>
+        <h2 class="section-title">탈출을 시작할 준비가 되었나요?</h2>
+        <p class="section-intro">배포 버전은 GitHub Releases에서 제공합니다. 새 빌드가 올라오면 이 페이지에서 바로 받을 수 있습니다.</p>
+        <a class="button" href="https://github.com/jw-astro09/share/releases">GitHub Releases 열기</a>
+        <p class="notice">현재는 개발 중인 프로젝트입니다.</p>
+      </div>
+    </section>
+  </main>
+  <footer><div class="wrap">© 2026 Escape from School · Made for the next escape.</div></footer>
+</body>
+</html>
